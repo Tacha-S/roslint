@@ -1,26 +1,59 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import {commands, workspace} from 'vscode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+import {lintActiveTextDocument, lintTextDocument} from './lint';
+import {killRosLint} from './roslint';
+
 export function activate(context: vscode.ExtensionContext) {
+  let subscriptions = context.subscriptions;
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "roslint" is now active!');
+  let diagnosticCollection = vscode.languages.createDiagnosticCollection();
+  subscriptions.push(diagnosticCollection);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('roslint.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
+  let loggingChannel = vscode.window.createOutputChannel('Ros lint');
+  subscriptions.push(loggingChannel);
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from roslint!');
-	});
+  async function lintAndSetDiagnostics(file: vscode.TextDocument) {
+    const diagnostics = await lintTextDocument(file, loggingChannel);
+    diagnosticCollection.set(file.uri, diagnostics);
+  }
 
-	context.subscriptions.push(disposable);
+  async function lintActiveDocAndSetDiagnostics() {
+    const diag = await lintActiveTextDocument(loggingChannel);
+    if (diag.document) {
+      diagnosticCollection.set(diag.document.uri, diag.diagnostics);
+    }
+  }
+
+  subscriptions.push(workspace.onDidSaveTextDocument((doc) => {
+    if (workspace.getConfiguration('roslint').get('lintOnSave')) {
+      lintAndSetDiagnostics(doc);
+    }
+  }));
+  subscriptions.push(workspace.onDidOpenTextDocument(lintAndSetDiagnostics));
+  subscriptions.push(workspace.onDidCloseTextDocument(
+      (doc) => diagnosticCollection.delete(doc.uri)));
+
+  subscriptions.push(workspace.onWillSaveTextDocument(killRosLint));
+
+  subscriptions.push(workspace.onDidSaveTextDocument((doc) => {
+    if (workspace.getConfiguration('roslint').get('lintOnSave')) {
+      if (doc.uri.scheme === 'file') {
+        workspace.textDocuments.forEach((doc) => lintAndSetDiagnostics(doc));
+      }
+    }
+  }));
+
+  subscriptions.push(workspace.onDidChangeConfiguration((config) => {
+    if (config.affectsConfiguration('roslint')) {
+      workspace.textDocuments.forEach((doc) => lintAndSetDiagnostics(doc));
+    }
+  }));
+
+  subscriptions.push(
+      commands.registerCommand('roslint.lint', lintActiveDocAndSetDiagnostics));
+
+  workspace.textDocuments.forEach((doc) => lintAndSetDiagnostics(doc));
 }
 
 // this method is called when your extension is deactivated

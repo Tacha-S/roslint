@@ -3,23 +3,50 @@
 	"displayName": "roslint",
 	"description": "Integrates ros-lint into VS Code",
 	"version": "0.0.1",
+	"publisher": "Tacha-S",
+	"repository": {
+		"url": "https://github.com/Tacha-S/roslint"
+	},
 	"engines": {
 		"vscode": "^1.49.0"
 	},
 	"categories": [
-		"Other"
+		"Linters"
 	],
 	"activationEvents": [
-		"onCommand:roslint.helloWorld"
+		"onLanguage:cpp",
+		"onLanguage:c",
+		"onLanguage:python",
+		"onCommand:roslint.lint"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "roslint.helloWorld",
-				"title": "Hello World"
+				"command": "roslint.lint",
+				"title": "Run ros lint"
 			}
-		]
+		],
+		"configuration": {
+			"title": "roslint",
+			"properties": {
+				"roslint.lintOnSave": {
+					"type": "boolean",
+					"default": true,
+					"description": "Automatically lint files when they are saved"
+				},
+				"roslint.enablePython": {
+					"type": "boolean",
+					"default": true,
+					"description": "Lint python files"
+				},
+				"roslint.enableCpp": {
+					"type": "boolean",
+					"default": true,
+					"description": "Lint cpp files"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
