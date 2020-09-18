@@ -1,21 +1,17 @@
 # roslint
 
+The extention provides support for [Robot Operating System (ROS)](https://www.ros.org/) development.
+
 ## Features
 
-The extention can run roslint on cpp or python files.
+It can run roslint on cpp or python files.
 
 ## Requirements
 
-- ROS
-- roslint
+- [ROS](https://www.ros.org/)
+- [roslint](http://wiki.ros.org/roslint)
 
 ## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
 
 * `roslint.enableCpp`: enable/disable linter on cpp
 * `roslint.enablePython`: enable/disable linter on python
