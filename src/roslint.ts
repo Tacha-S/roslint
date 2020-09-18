@@ -91,7 +91,7 @@ function roslintOutputAsObjectCpp(rosLintOutput: string) {
       DiagnosticMessage: {
         Message: elements[2].trim(),
         FilePath: elements[0],
-        FileLine: Number(elements[1]),
+        FileLine: Number(elements[1]) - 1,
         Severity: vscode.DiagnosticSeverity.Warning,
       },
     });
