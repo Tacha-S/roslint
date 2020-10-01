@@ -36,14 +36,6 @@ export function activate(context: vscode.ExtensionContext) {
 
   subscriptions.push(workspace.onWillSaveTextDocument(killRosLint));
 
-  subscriptions.push(workspace.onDidSaveTextDocument((doc) => {
-    if (workspace.getConfiguration('roslint').get('lintOnSave')) {
-      if (doc.uri.scheme === 'file') {
-        workspace.textDocuments.forEach((doc) => lintAndSetDiagnostics(doc));
-      }
-    }
-  }));
-
   subscriptions.push(workspace.onDidChangeConfiguration((config) => {
     if (config.affectsConfiguration('roslint')) {
       workspace.textDocuments.forEach((doc) => lintAndSetDiagnostics(doc));
