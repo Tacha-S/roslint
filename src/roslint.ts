@@ -72,7 +72,7 @@ interface RosLintDiagnostic {
 
 function roslintOutputAsObjectCpp(rosLintOutput: string) {
   let lines = rosLintOutput.split(/\n/);
-  if (lines.length <= 2) {
+  if (lines.length <= 3) {
     return {MainSourceFile: '', Diagnostics: []};
   }
 
