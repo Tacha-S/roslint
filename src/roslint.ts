@@ -102,7 +102,7 @@ function roslintOutputAsObjectCpp(rosLintOutput: string) {
 
 function roslintOutputAsObjectPy(rosLintOutput: string) {
   let lines = rosLintOutput.split(/\n/);
-  if (lines.length < 1) {
+  if (lines.length <= 1) {
     return {MainSourceFile: '', Diagnostics: []};
   }
 
