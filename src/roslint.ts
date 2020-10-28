@@ -91,7 +91,7 @@ function roslintOutputAsObjectCpp(rosLintOutput: string) {
       DiagnosticMessage: {
         Message: elements[2].trim(),
         FilePath: elements[0],
-        FileLine: Number(elements[1]) - 1,
+        FileLine: Number(elements[1]) > 0 ? Number(elements[1]) - 1 : 0,
         Severity: vscode.DiagnosticSeverity.Warning,
       },
     });
@@ -122,7 +122,7 @@ function roslintOutputAsObjectPy(rosLintOutput: string) {
       DiagnosticMessage: {
         Message: message ? message[2] : '',
         FilePath: elements[0],
-        FileLine: Number(elements[1]) - 1,
+        FileLine: Number(elements[1]) > 0 ? Number(elements[1]) - 1 : 0,
         Severity: vscode.DiagnosticSeverity.Warning,
       },
     });
