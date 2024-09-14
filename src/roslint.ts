@@ -38,10 +38,10 @@ export function runRosLint(
 
   return new Promise((resolve) => {
     const lint = files[0].split('/').reverse()[0].split('.')[1] == 'py' ?
-        'pep8' :
+        'pycodestyle' :
         'cpplint';
-    const rosLint = 'rosrun';
-    const args = ['roslint', lint].concat(files);
+    const rosLint = 'python3';
+    const args = ['-m', `roslint.${lint}`].concat(files);
 
     loggingChannel.appendLine(`> ${rosLint} ${args.join(' ')}`);
     loggingChannel.appendLine(`Working Directory: ${workingDirectory}`);
